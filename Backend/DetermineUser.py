@@ -7,14 +7,21 @@ import urllib
 from urllib.parse import quote
 import pprint
 
+from dotenv import load_dotenv
+import os
 
-YELP_API_KEY= "RytzLV4FkRl2FcHDc9nGBYu8ZbQBXneST-ddi-U6EUUwpe_9bEEyx_IzUzZPShmOcUGrOwPK5YEW9ZVIMxnl71jEsVFqApqRzn7uXV5l5xau_2_jY_c88_85q6MaZnYx"
+# Load the environment file
+load_dotenv('secrets.env')
+
+# Retrieve the API key
+YELP_API_KEY = os.getenv('YELP_API_KEY')
+
 
 API_HOST = 'https://api.yelp.com'
 SEARCH_PATH = '/v3/businesses/search'
 BUSINESS_PATH = '/v3/businesses/'
 
-DEFAULT_TERM = 'dinner'
+DEFAULT_TERM = 'tourist attractions'
 DEFAULT_LOCATION = 'San Francisco, CA'
 SEARCH_LIMIT = 3
 
@@ -48,13 +55,15 @@ class DetermineUser:
 
         response = requests.request('GET', url, headers=headers, params=url_params)
 
+        self.toJSON = response.json()
+
         return response.json()
 
     def categorizeActivity(self):
         '''
         Categorizes activity
         '''
-        pass
+        pprint.pprint(self.toJSON)
 
     def addToJSON(self):
         '''
@@ -65,7 +74,9 @@ class DetermineUser:
     
 def main():
     user = DetermineUser()
-    pprint.pprint(user.recieveActivity())
+    user.recieveActivity()
+
+    user.categorizeActivity()
 
 if __name__ == '__main__':
     main()

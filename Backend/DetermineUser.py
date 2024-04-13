@@ -6,6 +6,7 @@ import sys
 import urllib
 from urllib.parse import quote
 import pprint
+import random
 
 from dotenv import load_dotenv
 import os
@@ -21,30 +22,26 @@ API_HOST = 'https://api.yelp.com'
 SEARCH_PATH = '/v3/businesses/search'
 BUSINESS_PATH = '/v3/businesses/'
 
-DEFAULT_TERM = 'tourist attractions'
-DEFAULT_LOCATION = 'San Francisco, CA'
-SEARCH_LIMIT = 3
+terms = ['outdoor', 'exercise', 'relax', 'hiking', 'tourist attractions', 'popular dinner', 'popular lunch', 'popular breakfast', 'popular attractions', 'hidden gems', 'nature', 'garden', 'water', 'shopping', 'learning', 'kid friendly', 'nightlife', 'bars', 'sports']
+locations = ['Cancun, Mexico', 'Tokyo, Japan', 'Paris, France', 'Barcelona, Spain', 'New York City, New York', 'Los Angeles, California', 'Rio, Brazil', 'Zurich, Switzerland', 'Miami, Florida']
+SEARCH_LIMIT = 1
 
 
-class DetermineUser:
+class TravelAttractionData:
     def __init__(self):
-        toJSON = {}
-
-    def swipe(self, yes):
-        '''
-        Used to determine if user likes activity
-        '''
-        pass
+        self.toJSON = {}
+        self.categories = []
 
     def recieveActivity(self):
         '''
         Generate activity from Yelp API
         '''
         url_params = {
-            'term': DEFAULT_TERM .replace(' ', '+'),
-            'location': DEFAULT_LOCATION.replace(' ', '+'),
+            'term': random.choice(terms).replace(' ', '+'),
+            'location': random.choice(locations).replace(' ', '+'),
             'limit': SEARCH_LIMIT
         }
+
         url = '{0}{1}'.format(API_HOST, quote(SEARCH_PATH.encode('utf8')))
 
         headers = {
@@ -63,20 +60,43 @@ class DetermineUser:
         '''
         Categorizes activity
         '''
-        pprint.pprint(self.toJSON)
+        self.categories = []
+        for i in self.toJSON["businesses"][0]["categories"]:
+            self.categories.append(i["title"])
 
-    def addToJSON(self):
+        return self.categories
+
+class Swipe:
+    def __init__(self, TravelAttractionData):
+        self.touristAttraction = TravelAttractionData
+        self.json = {}
+
+    def swipe(self, yes):
         '''
-        Following activity categorization and swipe, add to JSON with user preference
+        Functionality for direction swiped by user
         '''
-        pass
+        self.touristAttraction.categorizeActivity()
+
+        if yes:
+            for i in self.touristAttraction.categories:
+                self.json[i] = True
+        else:
+            for i in self.touristAttraction.categories:
+                self.json[i] = False
+    
 
     
 def main():
-    user = DetermineUser()
+    user = TravelAttractionData()
     user.recieveActivity()
+    swipe = Swipe(user)
 
-    user.categorizeActivity()
+    swipe.swipe(True)
+    
+    print(swipe.json)
+    
+
+
 
 if __name__ == '__main__':
     main()

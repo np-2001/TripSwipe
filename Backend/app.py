@@ -17,7 +17,7 @@ def generate():
 	preferences = str(request.args.get('data'))
 	
 	genai.configure(api_key=gemini_api_key)
-	model = genai.GenerativeModel(model_name='models/gemini-1.5-pro-latest',system_instruction="You are a travel agent who knows popular spots in the area the user is asking for things to do in that also provides business name recommendations. You must stick to the location the user asks for recommendations from")
-	response = model.generate_content("Generate me a itinerary in Chicago with these likes and dislikes, return in JSON: "+ preferences)
+	model = genai.GenerativeModel(model_name='models/gemini-1.5-pro-latest', system_instruction="You are a travel agent creating an intinerary for client in JSON. Note it needs to be in english.")
+	response = model.generate_content("Generate it with these preferences, in json, only provide names of businesses/locations, no extra detail"+ preferences)
 
 	return response.text

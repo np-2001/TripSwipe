@@ -139,7 +139,6 @@ venv.bak/
 /site
 
 /Backend/secrets.env
-/Backend/determineUser.py
 
 # mypy
 .mypy_cache/

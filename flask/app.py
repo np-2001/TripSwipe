@@ -20,5 +20,5 @@ def generate():
 	genai.configure(api_key=gemini_api_key)
 	model = genai.GenerativeModel(model_name='models/gemini-1.5-pro-latest',system_instruction="You are a travel agent and a tour guide who knows popular spots in the area")
 	response = model.generate_content("Generate me a itinerary with these likes and dislikes: "+preferences)
-
+	
 	return response.text

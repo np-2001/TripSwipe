@@ -138,8 +138,8 @@ venv.bak/
 # mkdocs documentation
 /site
 
-/flask/secrets.env
-
+/Backend/secrets.env
+/Backend/determineUser.py
 
 # mypy
 .mypy_cache/

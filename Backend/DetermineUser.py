@@ -7,6 +7,8 @@ import urllib
 from urllib.parse import quote
 import pprint
 import random
+import requests
+import json
 
 from dotenv import load_dotenv
 import os
@@ -22,7 +24,7 @@ API_HOST = 'https://api.yelp.com'
 SEARCH_PATH = '/v3/businesses/search'
 BUSINESS_PATH = '/v3/businesses/'
 
-terms = ['outdoor', 'exercise', 'relax', 'hiking', 'tourist attractions', 'popular dinner', 'popular lunch', 'popular breakfast', 'popular attractions', 'hidden gems', 'nature', 'garden', 'water', 'shopping', 'learning', 'kid friendly', 'nightlife', 'bars', 'sports']
+terms = ['outdoor', 'exercise', 'relax', 'hiking', 'tourist attractions', 'popular dinner', 'popular lunch', 'popular breakfast', 'popular attractions', 'hidden gems', 'nature', 'garden', 'water', 'shopping', 'learning', 'kid friendly', 'nightlife', 'bars', 'sports', 'Landmarks & Historical Buildings']
 locations = ['Cancun, Mexico', 'Tokyo, Japan', 'Paris, France', 'Barcelona, Spain', 'New York City, New York', 'Los Angeles, California', 'Rio, Brazil', 'Zurich, Switzerland', 'Miami, Florida']
 SEARCH_LIMIT = 1
 
@@ -70,6 +72,10 @@ class Swipe:
     def __init__(self, TravelAttractionData):
         self.touristAttraction = TravelAttractionData
         self.json = {}
+    
+    def newAttraction(self):
+        self.touristAttraction = TravelAttractionData()
+        self.touristAttraction.recieveActivity()
 
     def swipe(self, yes):
         '''
@@ -90,10 +96,27 @@ def main():
     user = TravelAttractionData()
     user.recieveActivity()
     swipe = Swipe(user)
+    swipe.swipe(True)
 
+    swipe.newAttraction()
+    swipe.swipe(True)
+
+    swipe.newAttraction()
+    swipe.swipe(True)
+
+    swipe.newAttraction()
     swipe.swipe(True)
     
-    print(swipe.json)
+     # Convert dictionary to JSON format
+    json_data = json.dumps(swipe.json)
+
+    print(json_data)
+    
+    # Make a GET request with the JSON data as parameters
+    response = requests.get('http://localhost:5000/generate-locations', params={'data': json_data})
+    
+    # Print the response from the server
+    print(response.text)
     
 
 

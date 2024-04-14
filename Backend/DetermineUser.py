@@ -115,7 +115,7 @@ def main():
     json_data = swipe.retrieve("Lansing")
     
     # Make a GET request with the JSON data as parameters
-    response = requests.get('http://localhost:5000/generate-locations', params={'data': json_data})
+    response = requests.get('http://localhost:5000/generate-location')
     
     print(response.text)
     

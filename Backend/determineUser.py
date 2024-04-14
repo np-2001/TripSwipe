@@ -54,6 +54,7 @@ class TravelAttractionData:
 
         response = requests.request('GET', url, headers=headers, params=url_params)
 
+
         self.toJSON = response.json()
 
         return response.json()
@@ -63,6 +64,7 @@ class TravelAttractionData:
         Categorizes activity
         '''
         self.categories = []
+        print(self.toJSON)
         for i in self.toJSON["businesses"][0]["categories"]:
             self.categories.append(i["title"])
 
@@ -71,7 +73,7 @@ class TravelAttractionData:
 class Swipe:
     def __init__(self, TravelAttractionData):
         self.touristAttraction = TravelAttractionData
-        self.json = {}
+        self.json = {"language": "English"}
     
     def newAttraction(self):
         self.touristAttraction = TravelAttractionData()
@@ -82,13 +84,16 @@ class Swipe:
         Functionality for direction swiped by user
         '''
         self.touristAttraction.categorizeActivity()
-
         if yes:
             for i in self.touristAttraction.categories:
                 self.json[i] = True
         else:
             for i in self.touristAttraction.categories:
                 self.json[i] = False
+
+    def retrieve(self, location):
+        self.json["Location"] = location
+        return json.dumps(self.json)
     
 def main():
     user = TravelAttractionData()
@@ -105,15 +110,13 @@ def main():
     swipe.newAttraction()
     swipe.swipe(True)
     
+    
      # Convert dictionary to JSON format
-    json_data = json.dumps(swipe.json)
-
-    print(json_data)
+    json_data = swipe.retrieve("Lansing")
     
     # Make a GET request with the JSON data as parameters
     response = requests.get('http://localhost:5000/generate-locations', params={'data': json_data})
     
-    # Print the response from the server
     print(response.text)
     
 
